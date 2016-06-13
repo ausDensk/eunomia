@@ -21,39 +21,23 @@ Author URI: http://ideen.net
         echo "<div id='map'></div>";
         $get_coordinates_req = "SELECT * FROM wp_posts JOIN eu_coordinates ON wp_posts.ID=eu_coordinates.post_reference";
         // Mögliche Verbesserung: Nur bestimmte Attribute herausziehen!
+        // Mögliche Verbesserung: Als wpdb-Befehl umschreiben!
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         $coords = dbDelta( $get_coordinates_req);
         $results = $wpdb->get_results($get_coordinates_req );
-        $coordinates = array();
+        $coordinates = createMarkerData($results);
     ?> <!--$coordinates wird eigentlich von JS gebraucht, um die Marker anzuzeigen-->
     <script type="text/javascript">
-        var locationCoordinates = 
-        <?php 
-            for ($i = 0; $i < count($results); $i++) {
-            array_push($coordinates, array($results[$i]->latitude, $results[$i]->longitude, get_permalink($results[$i]), $results[$i]->post_title, $results[$i]->post_status));
-        };
-            echo json_encode($coordinates);
-        ?>;
+        var locationCoordinates = <?php echo $coordinates; ?>;
     </script>
     <?php
-        wp_register_script("mapincluder", "/wp-content/plugins/starrplugin/includemap.js");
-        wp_enqueue_script("mapincluder");
         runJS("mapincluder", "/wp-content/plugins/starrplugin/includemap.js");
     };
         
         function echo_on_edit_page() {
-        /* $form = "<div style='border: 1px solid black; width: 90%; height: 50%' id='postDiv' >
-    <h3>Koordinaten</h3>
-    <p>Hausnummer: </p><input id='housenumber'><br>
-    <p>Straße: </p><input id='street'><br>
-    <p>PLZ: </p><input id='postalcode'><br>
-    <p>Stadt: </p><input id='city'><br>
-</div>";
-    echo $form;*/
             runJS("includecoordform", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
         };
-    function postCoordinates($ID, $post) { 
-        global $wpdb;
+    function postCoordinates($ID, $post) {
         $latitude = $_POST["latitudevalue"];
         $longitude = $_POST["longitudevalue"];
         $post_ref = $ID;
@@ -80,10 +64,6 @@ function updateCoordinates($post) {
         echo "Zumindest ist hier was passiert.";
     };
 };
-function alerrto ($post) {
-    global $wpdb;
-    $wpdb->insert("eu_coordinates", array("ID" => NULL, "post_reference" => $post->ID, "longitude" => $_POST["longitude"], "latitude" => $_POST["latitude"]));
-}
 
 //Additional functions
 
@@ -103,6 +83,22 @@ function insertCoordinatesQuery($post_ref, $latitude, $longitude) {
             "latitude" => $longitude
         )
     );
+};
+
+function createMarkerData ($coordArray) {
+    $result = array();
+    for ($i = 0; $i < count($coordArray); $i++) {
+            array_push($result, 
+                       array(
+                           $coordArray[$i]->latitude, 
+                           $coordArray[$i]->longitude, 
+                           get_permalink($coordArray[$i]), 
+                           $coordArray[$i]->post_title, 
+                           $coordArray[$i]->post_status
+                       )
+            );
+        };
+    return json_encode($result);
 };
 
 //Add all actions
