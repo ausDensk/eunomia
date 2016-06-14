@@ -21,7 +21,6 @@ Author URI: http://ideen.net
         echo "<div id='map'></div>";
         $get_coordinates_req = "SELECT * FROM wp_posts JOIN eu_coordinates ON wp_posts.ID=eu_coordinates.post_reference";
         // Mögliche Verbesserung: Nur bestimmte Attribute herausziehen!
-        // Mögliche Verbesserung: Als wpdb-Befehl umschreiben!
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         $coords = dbDelta( $get_coordinates_req);
         $results = $wpdb->get_results($get_coordinates_req );
@@ -83,6 +82,12 @@ function insertCoordinatesQuery($post_ref, $latitude, $longitude) {
             "latitude" => $longitude
         )
     );
+};
+
+function getCoordinatesFromDB () {
+    $get_coordinates_req = "SELECT * FROM wp_posts JOIN eu_coordinates ON wp_posts.ID=eu_coordinates.post_reference";
+    // Mögliche Verbesserung: Nur bestimmte Attribute herausziehen!
+    return $wpdb->get_results($get_coordinates_req);
 };
 
 function createMarkerData ($coordArray) {
