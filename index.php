@@ -101,6 +101,7 @@ function createMarkerData ($coordArray) {
                            $coordArray[$i]->post_status
                        )
             );
+            //Mögliche Verbesserung: Objekt statt Array -> übersichtlicher!
         };
     return json_encode($result);
 };
