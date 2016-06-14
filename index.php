@@ -16,15 +16,13 @@ Author URI: http://ideen.net
         }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwz7_hMFXL29QyV5_EmfnvBHLtGL7q0aQ&callback=initMap"></script>
+
+    <!--Alle Funktionen, die als Actions an verschiedenen Hooks durchgeführt werden sollen-->
+
     <?php
     function echo_mapspace () {
         echo "<div id='map'></div>";
-        $get_coordinates_req = "SELECT * FROM wp_posts JOIN eu_coordinates ON wp_posts.ID=eu_coordinates.post_reference";
-        // Mögliche Verbesserung: Nur bestimmte Attribute herausziehen!
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        $coords = dbDelta( $get_coordinates_req);
-        $results = $wpdb->get_results($get_coordinates_req );
-        $coordinates = createMarkerData($results);
+        $coordinates = createMarkerData(getCoordinatesFromDB());
     ?> <!--$coordinates wird eigentlich von JS gebraucht, um die Marker anzuzeigen-->
     <script type="text/javascript">
         var locationCoordinates = <?php echo $coordinates; ?>;
@@ -85,6 +83,7 @@ function insertCoordinatesQuery($post_ref, $latitude, $longitude) {
 };
 
 function getCoordinatesFromDB () {
+    global $wpdb;
     $get_coordinates_req = "SELECT * FROM wp_posts JOIN eu_coordinates ON wp_posts.ID=eu_coordinates.post_reference";
     // Mögliche Verbesserung: Nur bestimmte Attribute herausziehen!
     return $wpdb->get_results($get_coordinates_req);
