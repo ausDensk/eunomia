@@ -62,7 +62,22 @@ function updateCoordinates($post) {
     };
 };
 
-//Additional functions
+//Additional functions and data
+
+class markerData {
+    private $latitude;
+    private $longitude;
+    private $permalink;
+    private $post_title;
+    private $post_status;
+    function __construct ($lat, $lng, $prmlnk, $title, $status) {
+        $this->latitude = $lat;
+        $this->longitude = $lng;
+        $this->permalink = $prmlnk;
+        $this->post_title = $title;
+        $this->post_status = $status;
+    };
+};
 
 function runJS ($name, $url) {
     wp_register_script($name, $url);
