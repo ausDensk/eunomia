@@ -4,15 +4,13 @@ var markerArray = [];
 var windowArray = [];
 var map = drawMap();
 var coordinateObjects = convertCoordinateArraysToObjects(locationCoordinates);
-
+console.log(coordinateObjects)
 createArrayOfInfoWindows(coordinateObjects);
 coordinateObjects.forEach(function (element, j, arr) {
     if (element.post_status == "publish") {
         var marker = addMarker(element.latitude, element.longitude)
         markerArray.push(marker);
         marker.addListener("click", function () {
-            console.log(windowArray + j);
-            console.log(windowArray)
             windowArray[j].open(map, marker);
         })
     }
@@ -30,7 +28,7 @@ function addMarker(mLat, mLng) {
 
 function drawMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 10,
+        zoom: 3,
         center: new google.maps.LatLng(51.4344079, 6.7623293),
     });
     return map;

@@ -38,7 +38,7 @@ Author URI: http://ideen.net
         $latitude = $_POST["latitudevalue"];
         $longitude = $_POST["longitudevalue"];
         $post_ref = $ID;
-        if ($latitude != NaN && $longitude != NaN) {
+        if ($latitude != null && $longitude != null) {
             insertCoordinatesQuery($post_ref, $latitude, $longitude);
         };
     };

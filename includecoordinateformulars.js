@@ -3,20 +3,12 @@ console.log("Koordinatenformulare initialisiert.");
 //Kreiere Rahmen-Div. Style muss angepasst werden.
 var postDiv = document.createElement("div");
 postDiv.id = "postDiv";
-var poststuff = document.getElementById("side-sortables");
-var poststuffi = document.getElementById("poststuff");
-if (poststuffi) {
-    var latitude = document.createElement("input");
-    var longitude = document.createElement("input");
-    latitude.id = "latitudeID";
-    latitude.type = "number";
-    latitude.name = "latitudevalue";
-    longitude.id = "longitudeID";
-    longitude.type = "number";
-    longitude.name = "longitudevalue";
-    poststuff.appendChild(postDiv);
-    postDiv.appendChild(latitude);
-    postDiv.appendChild(longitude);
+var sideSortables = document.getElementById("side-sortables");
+var poststuff = document.getElementById("poststuff");
+if (poststuff) {
+    sideSortables.appendChild(postDiv);
+    createCoordinateInput("latitude");
+    createCoordinateInput("longitude");
     var mapsReq = new XMLHttpRequest();
     mapsReq.open(
         "GET",
@@ -32,7 +24,7 @@ if (poststuffi) {
 
 function createCoordinateInput (name) {
     var newInput = document.createElement("input");
-    newInputput.id = name + "ID";
+    newInput.id = name + "ID";
     newInput.name = name + "value";
     newInput.type = "number";
     postDiv.appendChild(newInput);
