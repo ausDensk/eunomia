@@ -3,11 +3,12 @@ console.log(locationCoordinates);
 var markerArray = [];
 var windowArray = [];
 var map = drawMap();
+var coordinateObjects = convertCoordinateArraysToObjects(locationCoordinates);
 
-createArrayOfInfoWindows(locationCoordinates);
-locationCoordinates.forEach(function (element, j, arr) {
-    if (element[4] == "publish") {
-        var marker = addMarker(Number(element[0]), Number(element[1]))
+createArrayOfInfoWindows(coordinateObjects);
+coordinateObjects.forEach(function (element, j, arr) {
+    if (element.post_status == "publish") {
+        var marker = addMarker(element.latitude, element.longitude)
         markerArray.push(marker);
         marker.addListener("click", function () {
             console.log(windowArray + j);
@@ -36,7 +37,7 @@ function drawMap() {
 };
 
 function createArrayOfInfoWindows(coordinates) {
-    for (var i = 0; i < locationCoordinates.length; i++) {
+    for (var i = 0; i < coordinates.length; i++) {
         var newLink = createNewLink(coordinates[i]);
         var infowindow = new google.maps.InfoWindow({
             content: newLink
@@ -47,8 +48,23 @@ function createArrayOfInfoWindows(coordinates) {
 
 function createNewLink(coordDataSet) {
     var newLink = document.createElement("a");
-    newLink.href = coordDataSet[2];
-    var postname = document.createTextNode(coordDataSet[3]);
+    newLink.href = coordDataSet.permalink;
+    var postname = document.createTextNode(coordDataSet.post_title);
     newLink.appendChild(postname);
     return newLink
+};
+
+function convertCoordinateArraysToObjects (arr) {
+    var resarr = [];
+    for (var i in arr) {
+        var newEntry = {
+            latitude: Number(arr[i][0]),
+            longitude: Number(arr[i][1]),
+            permalink: arr[i][2],
+            post_title: arr[i][3],
+            post_status: arr[i][4],
+        };
+        resarr.push(newEntry);
+    };
+    return resarr;
 }
