@@ -42,23 +42,11 @@ Author URI: http://ideen.net
             insertCoordinatesQuery($post_ref, $latitude, $longitude);
         };
     };
-function updateCoordinates($post) {
-    global $wpdb;
-    $latitude = $_POST["latitude"];
-    $longitude = $_POST["longitude"];
-    $post_id = $post->ID;
+function updateCoordinates($ID, $post) {
+    $latitude = $_POST["latitudevalue"];
+    $longitude = $_POST["longitudevalue"];
     if (!is_nan($latitude) && !is_nan($longitude)) {
-        $wpdb->update(
-        "eu_coordinates",
-            array(
-            'longitude' => $longitude,
-            'latitude' => $latitude
-            ),
-            array(
-            'post_id' => $post->post_id
-            )
-        );
-        echo "Zumindest ist hier was passiert.";
+        updateCoordinatesQuery($ID, $latitude, $longitude);
     };
 };
 
@@ -76,10 +64,24 @@ function insertCoordinatesQuery($post_ref, $latitude, $longitude) {
         array(
             "ID" => NULL,
             "post_reference" => $post_ref,
-            "longitude" => $latitude,
-            "latitude" => $longitude
+            "longitude" => $longitude,
+            "latitude" => $latitude
         )
     );
+};
+
+function updateCoordinatesQuery($post_ref, $latitude, $longitude) {
+    global $wpdb;
+    $wpdb->update(
+        "eu_coordinates",
+            array(
+            'longitude' => $longitude,
+            'latitude' => $latitude
+            ),
+            array(
+            'post_reference' => $post_ref
+            )
+        );
 };
 
 function getCoordinatesFromDB () {
@@ -111,4 +113,5 @@ function createMarkerData ($coordArray) {
 add_action("get_footer", "echo_mapspace");
 add_action("publish_post", "postCoordinates");
 add_action('admin_footer', "echo_on_edit_page");
+add_action("edit_post", "updateCoordinates");
 ?>
