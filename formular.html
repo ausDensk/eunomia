@@ -1,7 +1,28 @@
-<div style="border: 1px solid black; width: 90%; height: 40%" id="postDiv">
-    <h3>Koordinaten</h3><br>
-    <p>Straße: </p><input id="streetid" name="streetvalue"><br>
-    <p>Hausnummer: </p><input id="housenumberid" name="housenumbervalue"><br>
-    <p>PLZ: </p><input id="postalcodeid" name="postalcodevalue"><br>
-    <p>Stadt: </p><input id="cityid" name="cityvalue"><br>
+<div id="coordinateform" class="postbox  hide-if-js" style="display: block;">
+    <button type="button" class="handlediv button-link" aria-expanded="true">
+        <span class="screen-reader-text">Toggle panel: Koordinaten</span>
+        <span class="toggle-indicator" aria-hidden="true"></span>
+    </button>
+    <h2 class="hndle ui-sortable-handle">
+        <span>Koordinaten</span>
+    </h2>
+    <div class="inside">
+        <p>Straße:</p>
+        <p>
+            <input type="text" id="streetid" name="streetvalue" class="form-input-tip" size="16" value="">
+        </p>
+        <p>Hausnummer:</p>
+        <p>
+            <input type="text" id="housenumberid" name="housenumbervalue" class="form-input-tip" size="16" value="">
+        </p>
+        <p>PLZ:</p>
+        <p>
+            <input type="number" id="postalcodeid" name="postalcodevalue" class="form-input-tip" size="16" value="">
+        </p>
+        <p>Stadt:</p>
+        <p>
+            <input type="text" id="cityid" name="cityvalue" class="form-input-tip" size="16" value="">
+        </p>
+        <input type="button" class="button" value="Gibt es diese Adresse schon?">
+    </div>
 </div>
