@@ -6,6 +6,7 @@ postDiv.id = "postDiv";
 var sideSortables = document.getElementById("side-sortables");
 var poststuff = document.getElementById("poststuff");
 if (poststuff) {
+    appendForm();
     sideSortables.appendChild(postDiv);
     createCoordinateInput("latitude");
     createCoordinateInput("longitude");
@@ -30,3 +31,11 @@ function createCoordinateInput (name) {
     postDiv.appendChild(newInput);
 }
 
+function appendForm () {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "../wp-content/plugins/starrplugin/formular.html");
+    xhr.onload = function() {
+        postDiv.innerHTML = xhr.responseText;
+    };
+    xhr.send()
+}
