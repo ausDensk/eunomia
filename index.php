@@ -23,11 +23,12 @@ Author URI: http://ideen.net
     function echo_mapspace () {
         echo "<div id='map'></div>";
         $coordinates = createMarkerData(getCoordinatesFromDB());
-    ?> <!--$coordinates wird eigentlich von JS gebraucht, um die Marker anzuzeigen-->
-    <script type="text/javascript">
-        var locationCoordinates = <?php echo $coordinates; ?>;
-    </script>
-    <?php
+    ?>
+        <!--$coordinates wird eigentlich von JS gebraucht, um die Marker anzuzeigen-->
+        <script type="text/javascript">
+            var locationCoordinates = <?php echo $coordinates; ?>;
+        </script>
+        <?php
         runJS("mapincluder", "/wp-content/plugins/starrplugin/includemap.js");
     };
         

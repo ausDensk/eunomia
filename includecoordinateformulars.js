@@ -1,6 +1,3 @@
-// Checken ob das überhaupt klappt.
-console.log("Koordinatenformulare initialisiert.");
-//Kreiere Rahmen-Div. Style muss angepasst werden.
 var postDiv = document.createElement("div");
 postDiv.id = "postDiv";
 var sideSortables = document.getElementById("side-sortables");
@@ -8,8 +5,19 @@ var poststuff = document.getElementById("poststuff");
 if (poststuff) {
     appendForm();
     sideSortables.appendChild(postDiv);
-    createCoordinateInput("latitude");
-    createCoordinateInput("longitude");
+    testMapsAPIRequest();
+};
+
+function appendForm () {
+    var getForm = new XMLHttpRequest();
+    getForm.open("GET", "../wp-content/plugins/starrplugin/formular.html");
+    getForm.onload = function() {
+        postDiv.innerHTML = getForm.responseText;
+    };
+    getForm.send()
+}
+
+function testMapsAPIRequest () {
     var mapsReq = new XMLHttpRequest();
     mapsReq.open(
         "GET",
@@ -22,20 +30,3 @@ if (poststuff) {
     };
     mapsReq.send();
 };
-
-function createCoordinateInput (name) {
-    var newInput = document.createElement("input");
-    newInput.id = name + "ID";
-    newInput.name = name + "value";
-    newInput.type = "number";
-    postDiv.appendChild(newInput);
-}
-
-function appendForm () {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "../wp-content/plugins/starrplugin/formular.html");
-    xhr.onload = function() {
-        postDiv.innerHTML = xhr.responseText;
-    };
-    xhr.send()
-}
