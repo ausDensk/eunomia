@@ -41,6 +41,16 @@ function sendRequestToGMapsAPI() {
     mapsReq.send();
 };
 
-function sendCoordinatesToPHP() {
-
+function sendCoordinatesToPHP(coordinates) {
+    var responseToPHP = new XMLHttpRequest();
+    responseToPHP.open(
+        "POST",
+        "index.php",
+        true
+    );
+    responseToPHP.onload = function() {
+        console.log("Sutsches");
+    };
+    responseToPHP.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded');
+    responseToPHP.send("latvalue=" + coordinates.lat + "&lngvalue=" + coordinates.lng);//TODO: Rausfinden, wie coordinates aufgebaut ist
 }
