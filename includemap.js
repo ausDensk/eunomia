@@ -52,15 +52,15 @@ function createNewLink(coordDataSet) {
     return newLink
 };
 
-function convertCoordinateArraysToObjects (arr) {
+function convertCoordinateArraysToObjects (coordinateArray) {
     var resarr = [];
-    for (var i in arr) {
+    for (var i in coordinateArray) {
         var newEntry = {
-            latitude: Number(arr[i][0]),
-            longitude: Number(arr[i][1]),
-            permalink: arr[i][2],
-            post_title: arr[i][3],
-            post_status: arr[i][4],
+            latitude: Number(coordinateArray[i][0]),
+            longitude: Number(coordinateArray[i][1]),
+            permalink: coordinateArray[i][2],
+            post_title: coordinateArray[i][3],
+            post_status: coordinateArray[i][4],
         };
         resarr.push(newEntry);
     };

@@ -23,26 +23,36 @@ Author URI: http://ideen.net
     function echo_mapspace () {
         echo "<div id='map'></div>";
         $coordinates = createMarkerData(getCoordinatesFromDB());
-    ?>
-        <!--$coordinates wird eigentlich von JS gebraucht, um die Marker anzuzeigen-->
+        pass_coordinates_to_JS($coordinates);
+        runJS("mapincluder", "/wp-content/plugins/starrplugin/includemap.js");
+    };
+        
+        function pass_coordinates_to_JS ($coordinates) {
+            ?>
         <script type="text/javascript">
             var locationCoordinates = <?php echo $coordinates; ?>;
         </script>
         <?php
-        runJS("mapincluder", "/wp-content/plugins/starrplugin/includemap.js");
-    };
-        
+        };
+
         function echo_on_edit_page() {
             runJS("includecoordform", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
         };
+
     function postCoordinates($ID, $post) {
         $latitude = $_POST["latitudevalue"];
         $longitude = $_POST["longitudevalue"];
+        $description = $_POST["descriptionvalue"];
         $post_ref = $ID;
         if ($latitude != null && $longitude != null) {
-            insertCoordinatesQuery($post_ref, $latitude, $longitude);
+            insertCoordinatesQuery($post_ref, $latitude, $longitude, $description);
         };
     };
+
+function convert_address_to_coordinates() {
+    runJS("geolocationrequest", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
+}
+
 function updateCoordinates($ID, $post) {
     $latitude = $_POST["latitudevalue"];
     $longitude = $_POST["longitudevalue"];
@@ -51,14 +61,12 @@ function updateCoordinates($ID, $post) {
     };
 };
 
-//Additional functions and data
-
 function runJS ($name, $url) {
     wp_register_script($name, $url);
     wp_enqueue_script($name);
 };
 
-function insertCoordinatesQuery($post_ref, $latitude, $longitude) {
+function insertCoordinatesQuery($post_ref, $latitude, $longitude, $description) {
     global $wpdb;
     $wpdb->insert(
         "eu_coordinates",
@@ -66,7 +74,8 @@ function insertCoordinatesQuery($post_ref, $latitude, $longitude) {
             "ID" => NULL,
             "post_reference" => $post_ref,
             "longitude" => $longitude,
-            "latitude" => $latitude
+            "latitude" => $latitude,
+            "description" => $description
         )
     );
 };
@@ -104,7 +113,6 @@ function createMarkerData ($coordArray) {
                            $coordArray[$i]->post_status
                        )
             );
-            //Mögliche Verbesserung: Objekt statt Array -> übersichtlicher!
         };
     return json_encode($result);
 };
