@@ -40,18 +40,15 @@ Author URI: http://ideen.net
         };
 
     function postCoordinates($ID, $post) {
-        $latitude = $_POST["latitudevalue"];
-        $longitude = $_POST["longitudevalue"];
+        runJS("geolocrequest", "/wp-content/plugins/starrplugin/geolocationrequest.js");
+        $latitude = $_POST["latvalue"];
+        $longitude = $_POST["lngvalue"];
         $description = $_POST["descriptionvalue"];
         $post_ref = $ID;
         if ($latitude != null && $longitude != null) {
             insertCoordinatesQuery($post_ref, $latitude, $longitude, $description);
         };
     };
-
-function convert_address_to_coordinates() {
-    runJS("geolocationrequest", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
-}
 
 function updateCoordinates($ID, $post) {
     $latitude = $_POST["latitudevalue"];

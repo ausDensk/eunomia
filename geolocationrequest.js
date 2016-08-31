@@ -1,5 +1,7 @@
-var addressArray = createAddressObject();
-replaceBlankspacesWithPlusses();
+console.log("Ich bin gestartet.");
+var addressArray = createAddressArray();
+console.log(addressArray);
+console.log(addressArray);
 sendRequestToGMapsAPI();
 
 function createAddressArray() {
@@ -8,22 +10,11 @@ function createAddressArray() {
     resarr.push(housenumber);
     var street = document.getElementById("street");
     resarr.push(street);
-    var postalcode = document.getElementById("postalcode");
+    var postalcode = document.getElementById("postalcode").toString();
     resarr.push(postalcode);
     var city = document.getElementById("city");
     resarr.push(city);
     return resarr;
-};
-
-function replaceBlankspacesWithPlusses() {
-    addressArray.forEach(element, index, value) {
-        for (var i = 0; i < value.length; i++) {
-            if (value[i] == " ") {
-                value.splice(i, 1, "+")
-            }
-        };
-        value.splice(0, 0, "+");
-    }
 };
 
 function sendRequestToGMapsAPI() {
@@ -34,6 +25,7 @@ function sendRequestToGMapsAPI() {
         true
     );
     mapsReq.onload = function () {
+        console.log("GMaps Request hat gefunzt.");
         var response = JSON.parse(mapsReq.responseText);
         var coordinates = response.results[0].geometry.location;
         sendCoordinatesToPHP(coordinates);
@@ -52,5 +44,5 @@ function sendCoordinatesToPHP(coordinates) {
         console.log("Sutsches");
     };
     responseToPHP.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded');
-    responseToPHP.send("latvalue=" + coordinates.lat + "&lngvalue=" + coordinates.lng);//TODO: Rausfinden, wie coordinates aufgebaut ist
+    responseToPHP.send("latvalue=" + coordinates.lat + "&lngvalue=" + coordinates.lng);
 }
