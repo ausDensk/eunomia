@@ -40,15 +40,24 @@ Author URI: http://ideen.net
         };
 
     function postCoordinates($ID, $post) {
-        runJS("geolocrequest", "/wp-content/plugins/starrplugin/geolocationrequest.js");
-        $latitude = $_POST["latvalue"];
-        $longitude = $_POST["lngvalue"];
-        $description = $_POST["descriptionvalue"];
+        $address = create_address_array();
+        $coordinates_array = geocode($address);
+        $latitude = coordinates_array[0];
+        $longitude = coordinates_array[1];
+        $description = coordinates_array[2];
         $post_ref = $ID;
         if ($latitude != null && $longitude != null) {
             insertCoordinatesQuery($post_ref, $latitude, $longitude, $description);
         };
     };
+
+function create_address_array() {
+    $housenumber = $_POST["housenumbervalue"];
+    $street = $_POST["streetvalue"];
+    $city = $_POST["cityvalue"];
+    $postalcode = (string)$_POST["postalcodevalue"];
+    return array($housenumber, $street, $city, $postalcode);
+};
 
 function updateCoordinates($ID, $post) {
     $latitude = $_POST["latitudevalue"];
@@ -62,6 +71,21 @@ function runJS ($name, $url) {
     wp_register_script($name, $url);
     wp_enqueue_script($name);
 };
+
+function geocode($address_array){
+    $url = "https://maps.google.com/maps/api/geocode/json?address=" . address_array[0] . "," . address_array[1] . "," . address_array[2] . "," . address_array[3] . "&components=country:DE&key=AIzaSyD6GBI5RvXZF5h2rzooMQQq5EazNI4-e5U";
+    $resp_unparsed = file_get_contents($url);
+    $resp = json_decode($resp_unparsed, true);
+        $latitude = $resp['results'][0]['geometry']['location']['lat'];
+        $longitude = $resp['results'][0]['geometry']['location']['lng'];
+        $formatted_address = $resp['results'][0]['formatted_address'];
+            $coordinates = array(
+                    $latitude, 
+                    $longitude,
+                    $url
+                );    
+            return $coordinates; 
+}
 
 function insertCoordinatesQuery($post_ref, $latitude, $longitude, $description) {
     global $wpdb;

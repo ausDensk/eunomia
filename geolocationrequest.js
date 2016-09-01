@@ -1,7 +1,6 @@
 console.log("Ich bin gestartet.");
 var addressArray = createAddressArray();
 console.log(addressArray);
-console.log(addressArray);
 sendRequestToGMapsAPI();
 
 function createAddressArray() {
@@ -21,7 +20,7 @@ function sendRequestToGMapsAPI() {
     var mapsReq = new XMLHttpRequest();
     mapsReq.open(
         "GET",
-        "https://maps.googleapis.com/maps/api/geocode/json?address=+" + addressArray[0] + ", " + addressArray[1] + "," + addressArray[3] + "," + addressArray[2] + "&components=country:DE&key=AIzaSyD6GBI5RvXZF5h2rzooMQQq5EazNI4-e5U",
+        "https://maps.googleapis.com/maps/api/geocode/json?address=+" + addressArray[0] + "," + addressArray[1] + "," + addressArray[3] + "," + addressArray[2] + "&components=country:DE&key=AIzaSyD6GBI5RvXZF5h2rzooMQQq5EazNI4-e5U",
         true
     );
     mapsReq.onload = function () {
