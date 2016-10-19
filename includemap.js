@@ -47,7 +47,7 @@ function createArrayOfInfoWindows(coordinates) {
 function createNewLink(coordDataSet) {
     var newLink = document.createElement("a");
     newLink.href = coordDataSet.permalink;
-    var postname = document.createTextNode(coordDataSet.post_title);
+    var postname = document.createTextNode(coordDataSet.description);
     newLink.appendChild(postname);
     return newLink
 };
@@ -59,7 +59,7 @@ function convertCoordinateArraysToObjects (coordinateArray) {
             latitude: Number(coordinateArray[i][0]),
             longitude: Number(coordinateArray[i][1]),
             permalink: coordinateArray[i][2],
-            post_title: coordinateArray[i][3],
+            description: coordinateArray[i][3],
             post_status: coordinateArray[i][4],
         };
         resarr.push(newEntry);

@@ -42,9 +42,9 @@ Author URI: http://ideen.net
     function postCoordinates($ID, $post) {
         $address = create_address_array();
         $coordinates_array = geocode($address);
-        $latitude = coordinates_array[0];
-        $longitude = coordinates_array[1];
-        $description = coordinates_array[2];
+        $latitude = $coordinates_array[0];
+        $longitude = $coordinates_array[1];
+        $description = $_POST["descriptionvalue"];
         $post_ref = $ID;
         if ($latitude != null && $longitude != null) {
             insertCoordinatesQuery($post_ref, $latitude, $longitude, $description);
@@ -55,7 +55,7 @@ function create_address_array() {
     $housenumber = $_POST["housenumbervalue"];
     $street = $_POST["streetvalue"];
     $city = $_POST["cityvalue"];
-    $postalcode = (string)$_POST["postalcodevalue"];
+    $postalcode = $_POST["postalcodevalue"];
     return array($housenumber, $street, $city, $postalcode);
 };
 
@@ -72,20 +72,34 @@ function runJS ($name, $url) {
     wp_enqueue_script($name);
 };
 
+function create_url($address_array) {
+    return "https://maps.google.com/maps/api/geocode/json?address=" . urlencode($address_array[0]) . "," . urlencode($address_array[1]) . "," . urlencode($address_array[2]) . "," . urlencode($address_array[3]) . "&components=country:DE&key=AIzaSyD6GBI5RvXZF5h2rzooMQQq5EazNI4-e5U";
+};
+
 function geocode($address_array){
-    $url = "https://maps.google.com/maps/api/geocode/json?address=" . address_array[0] . "," . address_array[1] . "," . address_array[2] . "," . address_array[3] . "&components=country:DE&key=AIzaSyD6GBI5RvXZF5h2rzooMQQq5EazNI4-e5U";
-    $resp_unparsed = file_get_contents($url);
+    $url = create_url($address_array);
+    $context = create_context();
+    $resp_unparsed = file_get_contents($url, false, $context);
     $resp = json_decode($resp_unparsed, true);
         $latitude = $resp['results'][0]['geometry']['location']['lat'];
         $longitude = $resp['results'][0]['geometry']['location']['lng'];
         $formatted_address = $resp['results'][0]['formatted_address'];
             $coordinates = array(
                     $latitude, 
-                    $longitude,
-                    $url
-                );    
+                    $longitude
+                );
             return $coordinates; 
-}
+};
+
+function create_context () {
+    $options = array(
+        'http'=>array(
+            'method'=> "GET",
+            'header'=> "Content-type: application/x-www-form-urlencoded\r\n"
+        )
+    );
+    return stream_context_create($options);
+};
 
 function insertCoordinatesQuery($post_ref, $latitude, $longitude, $description) {
     global $wpdb;
@@ -94,9 +108,16 @@ function insertCoordinatesQuery($post_ref, $latitude, $longitude, $description) 
         array(
             "ID" => NULL,
             "post_reference" => $post_ref,
-            "longitude" => $longitude,
-            "latitude" => $latitude,
+            "lat" => $latitude,
+            "lng" => $longitude,
             "description" => $description
+        ),
+        array(
+            '%d',
+            '%d',
+            '%s',
+            '%f',
+            '%s'
         )
     );
 };
@@ -127,10 +148,10 @@ function createMarkerData ($coordArray) {
     for ($i = 0; $i < count($coordArray); $i++) {
             array_push($result, 
                        array(
-                           $coordArray[$i]->latitude, 
-                           $coordArray[$i]->longitude, 
+                           $coordArray[$i]->lat, 
+                           $coordArray[$i]->lng, 
                            get_permalink($coordArray[$i]), 
-                           $coordArray[$i]->post_title, 
+                           $coordArray[$i]->description, 
                            $coordArray[$i]->post_status
                        )
             );
@@ -141,7 +162,7 @@ function createMarkerData ($coordArray) {
 //Add all actions
 
 add_action("get_footer", "echo_mapspace");
-add_action("publish_post", "postCoordinates");
+add_action("publish_post", "postCoordinates", 10, 2);
 add_action('admin_footer', "echo_on_edit_page");
 add_action("edit_post", "updateCoordinates");
 ?>
