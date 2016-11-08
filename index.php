@@ -41,6 +41,9 @@ Author URI: http://ideen.net
 
     function postCoordinates($ID, $post) {
         $address = create_address_array();
+        if (address_not_set($address)) {
+            return;
+        };
         $coordinates_array = geocode($address);
         $latitude = $coordinates_array[0];
         $longitude = $coordinates_array[1];
@@ -57,6 +60,15 @@ function create_address_array() {
     $city = $_POST["cityvalue"];
     $postalcode = $_POST["postalcodevalue"];
     return array($housenumber, $street, $city, $postalcode);
+};
+
+function address_not_set($address) {
+    for ($i = 1; $i < 4; $i++) {
+        if (!isset($address[$i]) || $address[$i] === "") {
+            wp_die("Adresse falsch: " . $address[$i]);
+        };
+    };
+    return false;
 };
 
 function updateCoordinates($ID, $post) {
@@ -146,12 +158,17 @@ function getCoordinatesFromDB () {
 function createMarkerData ($coordArray) {
     $result = array();
     for ($i = 0; $i < count($coordArray); $i++) {
+            if (!isset($coordArray[$i]->description) || $coordArray[$i]->description == "") {
+                $title_for_window = $coordArray[$i]->post_title;
+            } else {
+                $title_for_window = $coordArray[$i]->description;
+            };
             array_push($result, 
                        array(
                            $coordArray[$i]->lat, 
                            $coordArray[$i]->lng, 
                            get_permalink($coordArray[$i]), 
-                           $coordArray[$i]->description, 
+                           $title_for_window, 
                            $coordArray[$i]->post_status
                        )
             );
