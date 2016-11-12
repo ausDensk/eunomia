@@ -192,15 +192,8 @@ function assign_description_or_title($post) {
 
 function update_coordinates($ID, $post) {
     $new_address = create_address_array();
-    if (address_not_set($new_address)) {
-        return;
-    };
     $new_description = $_POST["descriptionvalue"];
-    $new_coordinates = geocode($new_address);
-    $latitude = $new_coordinates[0];
-    $longitude = $new_coordinates[1];
-    update_coordinates_query($ID, $latitude, $longitude, $new_description);
-    update_address_query($new_address, $ID);
+    decide_on_action($ID, $new_address, $new_description);
 };
 
 function process_and_update_data($post_ref, $address, $description) { //TODO: Integrieren!
@@ -296,4 +289,5 @@ function delete_query($table, $post_ref) {
 add_action("get_footer", "echo_mapspace");
 add_action("publish_post", "postCoordinates", 10, 2);
 add_action('admin_footer', "echo_on_edit_page");
+add_action("edit_post", "update_coordinates", 10, 2);
 ?>
