@@ -52,7 +52,7 @@ function createNewLink(coordDataSet) {
     return newLink
 };
 
-function convertCoordinateArraysToObjects (coordinateArray) {
+function convertCoordinateArraysToObjects(coordinateArray) {
     var resarr = [];
     for (var i in coordinateArray) {
         var newEntry = {
