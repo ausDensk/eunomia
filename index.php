@@ -39,22 +39,16 @@ function echo_on_edit_page() {
     runJS("includecoordform", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
 };
 
-function postCoordinates($ID, $post) { //TODO: Adresse speichern lassen!
+function postCoordinates($ID, $post) {
     $address = create_address_array();
     if (address_not_set($address)) {
         return;
     };
     $description = $_POST["descriptionvalue"];
-    $post_ref = $ID;
-    $coordinates_array = geocode($address);
-    $latitude = $coordinates_array[0];
-    $longitude = $coordinates_array[1];
-    if ($latitude != null && $longitude != null) {
-        insertCoordinatesQuery($post_ref, $latitude, $longitude, $description);
-    };
+    process_and_insert_data($ID, $address, $description);
 };
 
-function process_and_insert_data($post_ref, $address, $description) { //TODO: Integrieren!
+function process_and_insert_data($post_ref, $address, $description) {
     $coordinates_array = geocode($address);
     $latitude = $coordinates_array[0];
     $longitude = $coordinates_array[1];
@@ -196,7 +190,7 @@ function update_coordinates($ID, $post) {
     decide_on_action($ID, $new_address, $new_description);
 };
 
-function process_and_update_data($post_ref, $address, $description) { //TODO: Integrieren!
+function process_and_update_data($post_ref, $address, $description) {
     $new_coordinates = geocode($address);
     $latitude = $new_coordinates[0];
     $longitude = $new_coordinates[1];
