@@ -15,16 +15,16 @@ Author URI: http://ideen.net
             height: 40%;
         }
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwz7_hMFXL29QyV5_EmfnvBHLtGL7q0aQ&callback=initMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwz7_hMFXL29QyV5_EmfnvBHLtGL7q0aQ"></script>
 
     <!--Alle Funktionen, die als Actions an verschiedenen Hooks durchgeführt werden sollen-->
 
     <?php
 function echo_mapspace () {
     echo "<div id='map'></div>";
-    $coordinates = createMarkerData(getCoordinatesFromDB());
+    $coordinates = create_marker_data(get_coordinates_from_DB());
     pass_coordinates_to_JS($coordinates);
-    runJS("mapincluder", "/wp-content/plugins/starrplugin/includemap.js");
+    run_JS("mapincluder", "/wp-content/plugins/starrplugin/includemap.js");
 };
         
 function pass_coordinates_to_JS ($coordinates) {
@@ -36,10 +36,22 @@ function pass_coordinates_to_JS ($coordinates) {
 };
 
 function echo_on_edit_page() {
-    runJS("includecoordform", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
+    pass_coordinates_to_JS(json_encode(array())); //Wird benötigt, damit das JS keinen Fehler ausspuckt, weil locationCoordinates nicht definiert ist
+    run_JS("includecoordform", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
 };
 
-function postCoordinates($ID, $post) {
+function get_address_and_echo_on_edit_page() {
+    $post_ref = $_GET["post"];
+    $post_address = retrieve_current_address($post_ref);
+    $post_description = retrieve_current_coordinates($post_ref)->description;
+    if (isset($post_address)) {
+        array_push($post_address, $post_description);
+        pass_coordinates_to_JS(json_encode($post_address));
+        run_JS("includecoordform", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
+    };
+};
+
+function post_coordinates($ID, $post) {
     $address = create_address_array();
     if (address_not_set($address)) {
         return;
@@ -53,7 +65,8 @@ function process_and_insert_data($post_ref, $address, $description) {
     $latitude = $coordinates_array[0];
     $longitude = $coordinates_array[1];
     if ($latitude != null && $longitude != null) {
-        insertCoordinatesQuery($post_ref, $latitude, $longitude, $description);
+        insert_coordinates_query($post_ref, $latitude, $longitude, $description);
+        insert_address_query($address, $post_ref);
     };
 };
 
@@ -74,15 +87,7 @@ function address_not_set($address) {
     return false;
 };
 
-function updateCoordinates($ID, $post) {
-    $latitude = $_POST["latitudevalue"];
-    $longitude = $_POST["longitudevalue"];
-    if (!is_nan($latitude) && !is_nan($longitude)) {
-        updateCoordinatesQuery($ID, $latitude, $longitude);
-    };
-};
-
-function runJS ($name, $url) {
+function run_JS ($name, $url) {
     wp_register_script($name, $url);
     wp_enqueue_script($name);
 };
@@ -116,7 +121,7 @@ function create_context () {
     return stream_context_create($options);
 };
 
-function insertCoordinatesQuery($post_ref, $latitude, $longitude, $description) {
+function insert_coordinates_query($post_ref, $latitude, $longitude, $description) {
     global $wpdb;
     $wpdb->insert(
         "eu_coordinates",
@@ -152,24 +157,23 @@ function update_coordinates_query($post_ref, $latitude, $longitude, $description
         );
 };
 
-function getCoordinatesFromDB () {
+function get_coordinates_from_DB() {
     global $wpdb;
     $get_coordinates_req = "SELECT * FROM wp_posts JOIN eu_coordinates ON wp_posts.ID=eu_coordinates.post_reference";
-    // Mögliche Verbesserung: Nur bestimmte Attribute herausziehen!
     return $wpdb->get_results($get_coordinates_req);
 };
 
-function createMarkerData ($coordArray) {
+function create_marker_data($coord_array) {
     $result = array();
-    for ($i = 0; $i < count($coordArray); $i++) {
-            $title_for_window = assign_description_or_title($coordArray[$i]);
+    for ($i = 0; $i < count($coord_array); $i++) {
+            $title_for_window = assign_description_or_title($coord_array[$i]);
             array_push($result, 
                        array(
-                           $coordArray[$i]->lat, 
-                           $coordArray[$i]->lng, 
-                           get_permalink($coordArray[$i]), 
+                           $coord_array[$i]->lat, 
+                           $coord_array[$i]->lng, 
+                           get_permalink($coord_array[$i]), 
                            $title_for_window, 
-                           $coordArray[$i]->post_status
+                           $coord_array[$i]->post_status
                        )
             );
         };
@@ -228,7 +232,7 @@ function check_for_marker($post_ref) {
 function retrieve_current_address($post_ref) {
     global $wpdb;
     $req = "SELECT * FROM eu_addresses WHERE (post_reference=" . $post_ref . ")";
-    return $wpdb->get_row($req, OBJECT);
+    return $wpdb->get_row($req, ARRAY_N);
 };
 
 function retrieve_current_coordinates($post_ref) {
@@ -246,8 +250,8 @@ function insert_address_query($address, $post_ref) {
             "post_reference" => $post_ref,
             "housenumber" => $address[0],
             "street" => $address[1],
-            "postalcode" => $address[2],
-            "city" => $address[3]
+            "postalcode" => $address[3],
+            "city" => $address[2]
         )
     );
 };
@@ -278,10 +282,12 @@ function delete_query($table, $post_ref) {
     );
 };
 
+
 //Add all actions
 
 add_action("get_footer", "echo_mapspace");
-add_action("publish_post", "postCoordinates", 10, 2);
-add_action('admin_footer', "echo_on_edit_page");
+add_action("publish_post", "post_coordinates", 10, 2);
+add_action('load-post-new.php', "echo_on_edit_page");
+add_action('load-post.php', "get_address_and_echo_on_edit_page");
 add_action("edit_post", "update_coordinates", 10, 2);
 ?>
