@@ -275,13 +275,13 @@ function check_for_marker($post_ref) {
 
 function retrieve_current_address($post_ref) {
     global $wpdb;
-    $req = "SELECT * FROM eu_addresses WHERE (post_reference=" . $post_ref . ")";
+    $req = $wpdb->prepare("SELECT * FROM eu_addresses WHERE (post_reference=%d)", $post_ref);
     return $wpdb->get_row($req, ARRAY_N);
 };
 
 function retrieve_current_coordinates($post_ref) {
     global $wpdb;
-    $req = "SELECT * FROM eu_coordinates WHERE (post_reference=" . $post_ref . ")";
+    $req = $wpdb->prepare("SELECT * FROM eu_coordinates WHERE (post_reference=%d)", $post_ref);
     return $wpdb->get_row($req, OBJECT);
 };
 
