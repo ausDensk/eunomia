@@ -4,7 +4,6 @@ function putFormInRightPlace() {
     var postDiv = document.createElement("div");
     postDiv.id = "postDiv";
     var sideSortables = document.getElementById("side-sortables");
-    var poststuff = document.getElementById("poststuff");
     appendForm();
     sideSortables.appendChild(postDiv);
     if (locationCoordinates.length != 0) {

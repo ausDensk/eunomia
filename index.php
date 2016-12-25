@@ -47,8 +47,10 @@ function get_address_and_echo_on_edit_page() {
     if (isset($post_address)) {
         array_push($post_address, $post_description);
         pass_coordinates_to_JS(json_encode($post_address));
-        run_JS("includecoordform", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
-    };
+    } else {
+        pass_coordinates_to_JS(json_encode(array()));
+    }
+    run_JS("includecoordform", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
 };
 
 function post_coordinates($ID, $post) {
