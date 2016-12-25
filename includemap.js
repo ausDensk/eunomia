@@ -2,16 +2,21 @@ console.log("Map wird initialisiert.");
 console.log(locationCoordinates);
 var markerArray = [];
 var windowArray = [];
+var noDoubledCoordinates = [];
 var map = drawMap();
 var coordinateObjects = convertCoordinateArraysToObjects(locationCoordinates);
 console.log(coordinateObjects)
 createArrayOfInfoWindows(coordinateObjects);
-coordinateObjects.forEach(function (element, j, arr) {
-    if (element.post_status == "publish") {
-        var marker = addMarker(element.latitude, element.longitude)
+deleteDoubles(coordinateObjects);
+noDoubledCoordinates.forEach(function (element, j, arr) {
+    if (element.markerData.post_status == "publish") {
+        var marker = addMarker(element.markerData.latitude, element.markerData.longitude)
         markerArray.push(marker);
         marker.addListener("click", function () {
-            windowArray[j].open(map, marker);
+            for (var i in element.infowindows) {
+                windowArray[element.infowindows[i]].open(map, marker);
+            };
+            //windowArray[j].open(map, marker);
         })
     }
 });
@@ -42,7 +47,17 @@ function createArrayOfInfoWindows(coordinates) {
         });
         windowArray.push(infowindow);
     };
-}
+    console.log(windowArray)
+};
+
+function checkForDoubledCoordinates(coordinates, currentIndex) {
+    for (var i = 0; i < currentIndex; i++) {
+        if (coordinates[i].latitude == coordinates[currentIndex].latitude && coordinates[i].longitude == coordinates[currentIndex].longitude) {
+            return i
+        };
+    }
+    return
+};
 
 function createNewLink(coordDataSet) {
     var newLink = document.createElement("a");
@@ -65,4 +80,32 @@ function convertCoordinateArraysToObjects(coordinateArray) {
         resarr.push(newEntry);
     };
     return resarr;
+};
+
+function deleteDoubles(coordinates) {
+    for (var i in coordinates) {
+        var replaced = false;
+        if (noDoubledCoordinates != []) {
+            for (var j in noDoubledCoordinates) {
+                if (sameLatLng(coordinates[i], noDoubledCoordinates[j].markerData)) {
+                    noDoubledCoordinates[j].infowindows.push(i)
+                    replaced = true;
+                }
+            };
+        };
+        if (!replaced) {
+            noDoubledCoordinates.push({
+                markerData: coordinates[i],
+                infowindows: [i]
+            })
+        }
+    };
+    console.log(noDoubledCoordinates)
+};
+
+function sameLatLng(coord1, coord2) {
+    if (coord1.latitude == coord2.latitude && coord1.longitude == coord2.longitude) {
+        return true
+    }
+    return false
 }
