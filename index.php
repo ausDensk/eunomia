@@ -20,7 +20,47 @@ Author URI: http://ideen.net
     <!--Alle Funktionen, die als Actions an verschiedenen Hooks durchgeführt werden sollen-->
 
     <?php
-function echo_mapspace () {
+function create_coordinates_table() {
+    global $wpdb;
+    $charset_collate = $wpdb->get_charset_collate();
+    $sql = "CREATE TABLE eu_coords (
+        ID bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        post_reference bigint(20) UNSIGNED NOT NULL,
+        lat float NOT NULL,
+        lng float NOT NULL,
+        description varchar(255),
+        PRIMARY KEY  (ID)
+        FOREIGN KEY (post_reference) REFERENCES wp_posts(ID)
+    ) $charset_collate;";
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta( $sql );
+};
+
+function create_addresses_table() {
+    global $wpdb;
+    $charset_collate = $wpdb->get_charset_collate();
+    $sql = "CREATE TABLE eu_addrs (
+        ID bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        post_reference bigint(20) UNSIGNED NOT NULL,
+        lat float NOT NULL,
+        lng float NOT NULL,
+        street varchar(255) NOT NULL,
+        housenumber varchar(5),
+        postalcode varchar(5) NOT NULL,
+        city varchar(255) NOT NULL,
+        PRIMARY KEY  (ID)
+        FOREIGN KEY (post_reference) REFERENCES wp_posts(ID)
+    ) $charset_collate;";
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta( $sql );
+};
+
+function create_tables() {
+    create_coordinates_table();
+    create_addresses_table();
+}
+
+function echo_mapspace() {
     echo "<div id='map'></div>";
     $coordinates = create_marker_data(get_coordinates_from_DB());
     pass_coordinates_to_JS($coordinates);
@@ -292,4 +332,5 @@ add_action("publish_post", "post_coordinates", 10, 2);
 add_action('load-post-new.php', "echo_on_edit_page");
 add_action('load-post.php', "get_address_and_echo_on_edit_page");
 add_action("edit_post", "update_coordinates", 10, 2);
+add_action("init", "create_tables");
 ?>
