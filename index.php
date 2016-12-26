@@ -8,13 +8,6 @@ Author: Der Boss selber.
 Author URI: http://ideen.net
 */
 ?>
-    <style type="text/css">
-        #map {
-            margin: 0% 8% 8% 8%;
-            width: 84%;
-            height: 40%;
-        }
-    </style>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwz7_hMFXL29QyV5_EmfnvBHLtGL7q0aQ"></script>
 
     <!--Alle Funktionen, die als Actions an verschiedenen Hooks durchgeführt werden sollen-->
@@ -63,10 +56,11 @@ function create_addresses_table() {
 };
 
 function echo_mapspace() {
-    echo "<div id='map'></div>";
-    $coordinates = create_marker_data(get_coordinates_from_DB());
-    pass_coordinates_to_JS($coordinates);
-    run_JS("mapincluder", "/wp-content/plugins/starrplugin/includemap.js");
+    if (home_url() == "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" || home_url() . "/" == "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]") {
+        $coordinates = create_marker_data(get_coordinates_from_DB());
+        pass_coordinates_to_JS($coordinates);
+        run_JS("mapincluder", "/wp-content/plugins/starrplugin/includemap.js");
+    }; 
 };
         
 function pass_coordinates_to_JS ($coordinates) {
