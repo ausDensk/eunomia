@@ -30,7 +30,7 @@ function create_coordinates_table() {
         PRIMARY KEY  (ID)
     ) $charset_collate;";
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-    dbDelta($create_sql);
+    $wpdb->query($create_sql);
     $foreign_key_sql = "ALTER TABLE eu_coords ADD FOREIGN KEY (post_reference) REFERENCES wp_posts(id) 
     ON DELETE CASCADE ON UPDATE CASCADE;";
     $wpdb->query($foreign_key_sql);

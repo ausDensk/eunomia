@@ -6,7 +6,6 @@ var noDoubledCoordinates = [];
 getMap();
 
 function displayMapWithEverything() {
-    console.log("Hi")
     var map = drawMap();
     var coordinateObjects = convertCoordinateArraysToObjects(locationCoordinates);
     console.log(coordinateObjects)
@@ -23,11 +22,10 @@ function displayMapWithEverything() {
             })
         }
     });
-    setTimeout(function () {map.setZoom(12);
-    map.setCenter(new google.maps.LatLng(51.4344079, 6.7623293))}, 200);
 }
 
 function addMarker(mLat, mLng, map) {
+    console.log(google)
     return new google.maps.Marker({
         position: {
             lat: mLat,
@@ -38,7 +36,10 @@ function addMarker(mLat, mLng, map) {
 }
 
 function drawMap() {
-    var map = new google.maps.Map(document.getElementById('map2'));
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: new google.maps.LatLng(51.4344079, 6.7623293) 
+    });
     return map;
 };
 
@@ -114,13 +115,11 @@ function sameLatLng(coord1, coord2) {
 }
 
 function getMap() {
-    console.log("Hallo")
-    var getForm = new XMLHttpRequest();
-    getForm.open("GET", "http://localhost/wordpress/wp-content/plugins/starrplugin/map.html");
-    getForm.onload = function() {
-        console.log(getForm.responseText)
-        document.querySelector("#main").innerHTML += getForm.responseText;
-        setTimeout(displayMapWithEverything, 500);
+    var mapXHR = new XMLHttpRequest();
+    mapXHR.open("GET", "./wp-content/plugins/starrplugin/map.html");
+    mapXHR.onload = function() {
+        document.querySelector("#main").innerHTML += mapXHR.responseText;
+        displayMapWithEverything();
     };
-    getForm.send()
+    mapXHR.send()
 } 
