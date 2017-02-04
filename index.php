@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: starrplugin
-Plugin URI: http://wordpress.org/plugins/starrplugin
-Description: "Ich bin gile."
-Version: "0.1"
-Author: Der Boss selber.
+Plugin Name: Eunomia Maps Plugin
+Plugin URI: http://wordpress.org/plugins/eunomia
+Description: "Ein Plugin, das es erlaubt, auf der Startseite eine Karte mit Markern anzuzeigen, die einzelne Artikel verlinken."
+Version: "0.2"
+Author: starrvinc
 Author URI: http://ideen.net
 */
 ?>
