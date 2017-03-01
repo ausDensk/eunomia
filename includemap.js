@@ -25,7 +25,6 @@ function displayMapWithEverything() {
 }
 
 function addMarker(mLat, mLng, map) {
-    console.log(google)
     return new google.maps.Marker({
         position: {
             lat: mLat,
@@ -36,10 +35,12 @@ function addMarker(mLat, mLng, map) {
 }
 
 function drawMap() {
+    console.log(google.maps.Map);
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 12,
         center: new google.maps.LatLng(51.4344079, 6.7623293) 
     });
+    console.log(map);
     return map;
 };
 

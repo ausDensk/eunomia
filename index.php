@@ -7,12 +7,6 @@ Version: "0.2"
 Author: starrvinc
 Author URI: http://ideen.net
 */
-?>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwz7_hMFXL29QyV5_EmfnvBHLtGL7q0aQ"></script>
-
-    <!--Alle Funktionen, die als Actions an verschiedenen Hooks durchgeführt werden sollen-->
-
-    <?php
 
 /*Erstellen der Tabellen bei Aktivierung des Plug-ins*/
 
@@ -264,8 +258,13 @@ function process_and_delete_data($post_ref) {
 
 /*Webhook-Funktionen und alles zusätzliche*/
 
+function init_plugin() {
+    create_tables();
+};
+
 function echo_mapspace() {
     if (home_url() == "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" || home_url() . "/" == "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]") {
+        run_JS("gmaps", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDwz7_hMFXL29QyV5_EmfnvBHLtGL7q0aQ");
         $coordinates = create_marker_data(get_coordinates_from_DB());
         pass_coordinates_to_JS($coordinates);
         run_JS("mapincluder", "/wp-content/plugins/starrplugin/includemap.js");
@@ -308,7 +307,6 @@ function post_coordinates($ID, $post) {
 
 function echo_on_edit_page() {
     pass_coordinates_to_JS(json_encode(array())); //Wird benötigt, damit das JS keinen Fehler ausspuckt, weil locationCoordinates nicht definiert ist
-    run_JS("includecoordform", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
 };
 
 function get_address_and_echo_on_edit_page() {
@@ -332,7 +330,7 @@ function update_coordinates($ID, $post) {
 
 /*Aufrufe der Funktionen - Webhooks*/
 
-register_activation_hook(__FILE__, "create_tables");
+register_activation_hook(__FILE__, "init_plugin");
 add_action("get_footer", "echo_mapspace");
 add_action("publish_post", "post_coordinates", 10, 2);
 add_action('load-post-new.php', "echo_on_edit_page");
