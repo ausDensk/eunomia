@@ -307,6 +307,7 @@ function post_coordinates($ID, $post) {
 
 function echo_on_edit_page() {
     pass_coordinates_to_JS(json_encode(array())); //Wird benötigt, damit das JS keinen Fehler ausspuckt, weil locationCoordinates nicht definiert ist
+    run_JS("includecoordform", "/wp-content/plugins/starrplugin/includecoordinateformulars.js");
 };
 
 function get_address_and_echo_on_edit_page() {
