@@ -1,7 +1,7 @@
 <?php 
 function display_formular($post) {
     $post_address = retrieve_current_address($post->ID);
-    $post_description = retrieve_current_coordinates($post->ID)->description;
+    $post_description = stripslashes_deep(retrieve_current_coordinates($post->ID)->description);
     
 ?>
 

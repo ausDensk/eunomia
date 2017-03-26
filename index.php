@@ -155,7 +155,7 @@ function assign_description_or_title($post) {
     if (!isset($post->description) || $post->description == "") {
         return $post->post_title;
     } else {
-        return $post->description;
+        return stripslashes_deep($post->description);
     };
 };
 
