@@ -17,7 +17,7 @@ function create_coordinates_table() {
     ) $charset_collate;";
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     $wpdb->query($create_sql);
-    $foreign_key_sql = "ALTER TABLE eu_coords ADD FOREIGN KEY (post_reference) REFERENCES wp_posts(id) 
+    $foreign_key_sql = "ALTER TABLE eu_coordinates ADD FOREIGN KEY (post_reference) REFERENCES wp_posts(id) 
     ON DELETE CASCADE ON UPDATE CASCADE;";
     $wpdb->query($foreign_key_sql);
 };
@@ -36,7 +36,7 @@ function create_addresses_table() {
     ) $charset_collate;";
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     $wpdb->query($create_sql);
-    $foreign_key_sql = "ALTER TABLE eu_addrs ADD FOREIGN KEY (post_reference) REFERENCES wp_posts(id) 
+    $foreign_key_sql = "ALTER TABLE eu_addresses ADD FOREIGN KEY (post_reference) REFERENCES wp_posts(id) 
     ON DELETE CASCADE ON UPDATE CASCADE;";
     $wpdb->query($foreign_key_sql);
 };
@@ -128,6 +128,12 @@ function retrieve_current_coordinates($post_ref) {
     global $wpdb;
     $req = $wpdb->prepare("SELECT * FROM eu_coordinates WHERE (post_reference=%d)", $post_ref);
     return $wpdb->get_row($req, OBJECT);
+};
+
+function retrieve_current_post($ID) {
+	global $wpdb;
+	$req = $wpdb->prepare("SELECT * FROM wp_posts WHERE (ID=%d)", $ID);
+	return $wpdb->get_row($req, OBJECT);
 };
 
 function get_coordinates_from_DB() {

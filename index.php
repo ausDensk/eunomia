@@ -83,8 +83,8 @@ function decide_on_action($ID, $address, $description){
         };
     } else {
         if (check_for_marker($ID)) {
-            process_and_delete_data($ID);
-        };
+		    process_and_delete_data( $ID );
+	    };
     };
 };
 
@@ -156,26 +156,25 @@ function assign_description_or_title($post) {
         return $post->post_title;
     } else {
         return stripslashes_deep($post->description);
-    };
-};
-
-function post_coordinates($ID, $post) {
-    $address = create_address_array();
-    if (address_not_set($address)) {
-        return;
-    };
-    $description = $_POST["descriptionvalue"];
-    process_and_insert_data($ID, $address, $description);
+    }
 };
 
 function new_echo_on_edit_page() {
     add_meta_box("coordinates", "Koordinaten", "display_formular", "post", "advanced", "high");
 }
 
-function update_coordinates($ID, $post) {
+function post_coordinates($ID) {
     $new_address = create_address_array();
     $new_description = $_POST["descriptionvalue"];
     decide_on_action($ID, $new_address, $new_description);
+};
+
+function deactivate_edit_function_before_trashing() {
+    remove_action("edit_post", "post_coordinates", 10);
+};
+
+function activate_edit_function_after_trashing() {
+	add_action("edit_post", "post_coordinates", 10, 2);
 };
 
 /*Aufrufe der Funktionen - Webhooks*/
@@ -185,7 +184,12 @@ require("formular.php");
 
 register_activation_hook(__FILE__, "init_plugin");
 add_action("get_footer", "echo_mapspace");
-add_action("publish_post", "post_coordinates", 10, 2);
 add_action('add_meta_boxes', 'new_echo_on_edit_page');
-add_action("edit_post", "update_coordinates", 10, 2);
+add_action("edit_post", "post_coordinates", 10, 2);
+
+//Stupid workaround for preserving marker when post is deleted
+add_action("untrash_post", "deactivate_edit_function_before_trashing");
+add_action("untrashed_post", "activate_edit_function_after_trashing");
+add_action("wp_trash_post", "deactivate_edit_function_before_trashing");
+add_action("trashed_post", "activate_edit_function_after_trashing");
 ?>

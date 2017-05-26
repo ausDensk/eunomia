@@ -6,7 +6,7 @@ function putFormInRightPlace() {
     var sideSortables = document.getElementById("side-sortables");
     appendForm();
     sideSortables.appendChild(postDiv);
-    if (locationCoordinates.length != 0) {
+    if (locationCoordinates.length !== 0) {
         setTimeout(findElementsAndPutTextIn, 1000, postDiv);
     };
 };
