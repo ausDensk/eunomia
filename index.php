@@ -166,15 +166,9 @@ function new_echo_on_edit_page() {
 function post_coordinates($ID) {
     $new_address = create_address_array();
     $new_description = $_POST["descriptionvalue"];
-    decide_on_action($ID, $new_address, $new_description);
-};
-
-function deactivate_edit_function_before_trashing() {
-    remove_action("edit_post", "post_coordinates", 10);
-};
-
-function activate_edit_function_after_trashing() {
-	add_action("edit_post", "post_coordinates", 10, 2);
+    if (isset($_POST["postscreen_input"])) {
+	    decide_on_action($ID, $new_address, $new_description);
+    };
 };
 
 /*Aufrufe der Funktionen - Webhooks*/
@@ -187,9 +181,4 @@ add_action("wp_enqueue_scripts", "echo_mapspace");
 add_action('add_meta_boxes', 'new_echo_on_edit_page');
 add_action("edit_post", "post_coordinates", 10, 2);
 
-//Stupid workaround for preserving marker when post is deleted
-add_action("untrash_post", "deactivate_edit_function_before_trashing");
-add_action("untrashed_post", "activate_edit_function_after_trashing");
-add_action("wp_trash_post", "deactivate_edit_function_before_trashing");
-add_action("trashed_post", "activate_edit_function_after_trashing");
 ?>

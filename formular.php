@@ -21,7 +21,7 @@ function display_formular($post) {
     }
 </script>
 
-    <!--<input style="display: none" value="Boddentruppen" name="postscreen_input" />  Used to check whether post was updated from the post.php-screen or from another screen-->
+<input style="display: none" value="Boddentruppen" name="postscreen_input" /> <!--Used to check whether post was updated from the post.php-screen or from another screen-->
 
 <p>Straße:</p>
 <p>
