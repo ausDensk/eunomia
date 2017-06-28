@@ -183,7 +183,7 @@ require("dbqueries.php");
 require("formular.php");
 
 register_activation_hook(__FILE__, "init_plugin");
-add_action("get_footer", "echo_mapspace");
+add_action("wp_enqueue_scripts", "echo_mapspace");
 add_action('add_meta_boxes', 'new_echo_on_edit_page');
 add_action("edit_post", "post_coordinates", 10, 2);
 

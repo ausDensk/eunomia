@@ -5,6 +5,24 @@ function display_formular($post) {
     
 ?>
 
+<button class="button" onclick="deleteAllEntries()">Löschen</button>
+
+<script type="text/javascript">
+    function deleteAllEntries() {
+        var idArr = ["street", "housenumber", "postalcode", "city"];
+        for (var i in idArr) {
+            var currentInput = document.querySelector("#" + idArr[i] + "id");
+            console.log(currentInput);
+            currentInput.value = "";
+        };
+        var descriptionArea = document.querySelector("#descriptionid");
+        console.log(descriptionArea.value);
+        descriptionArea.value = "";
+    }
+</script>
+
+    <!--<input style="display: none" value="Boddentruppen" name="postscreen_input" />  Used to check whether post was updated from the post.php-screen or from another screen-->
+
 <p>Straße:</p>
 <p>
     <input type="text" id="streetid" name="streetvalue" class="form-input-tip" size="16" value="<?php echo $post_address['street']; ?>">

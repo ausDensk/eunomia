@@ -138,7 +138,7 @@ function retrieve_current_post($ID) {
 
 function get_coordinates_from_DB() {
     global $wpdb;
-    $get_coordinates_req = "SELECT * FROM wp_posts JOIN eu_coordinates ON wp_posts.ID=eu_coordinates.post_reference";
+    $get_coordinates_req = "SELECT * FROM wp_posts JOIN eu_coordinates ON wp_posts.ID=eu_coordinates.post_reference WHERE wp_posts.post_status='publish'";
     return $wpdb->get_results($get_coordinates_req);
 };
 ?>

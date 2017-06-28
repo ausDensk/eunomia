@@ -12,15 +12,13 @@ function displayMapWithEverything() {
     createArrayOfInfoWindows(coordinateObjects);
     deleteDoubles(coordinateObjects);
     noDoubledCoordinates.forEach(function (element, j, arr) {
-        if (element.markerData.post_status == "publish") {
-            var marker = addMarker(element.markerData.latitude, element.markerData.longitude, map)
-            markerArray.push(marker);
-            marker.addListener("click", function () {
-                for (var i in element.infowindows) {
-                    windowArray[element.infowindows[i]].open(map, marker);
-                };
-            })
-        }
+        var marker = addMarker(element.markerData.latitude, element.markerData.longitude, map)
+        markerArray.push(marker);
+        marker.addListener("click", function () {
+            for (var i in element.infowindows) {
+                windowArray[element.infowindows[i]].open(map, marker);
+            };
+        })
     });
 }
 
