@@ -51,13 +51,6 @@ function insert_coordinates_query($post_ref, $latitude, $longitude, $description
             "lat" => $latitude,
             "lng" => $longitude,
             "description" => $description
-        ),
-        array(
-            '%d',
-            '%d',
-            '%s',
-            '%f',
-            '%s'
         )
     );
 };
@@ -81,15 +74,15 @@ function update_coordinates_query($post_ref, $latitude, $longitude, $description
     global $wpdb;
     $wpdb->update(
         "eu_coordinates",
-            array(
-            'lat' => $latitude,
+	    array(
+	        'lat' => $latitude,
             'lng' => $longitude,
             'description' => $description
             ),
-            array(
+	    array(
             'post_reference' => $post_ref
-            )
-        );
+	    )
+    );
 };
 
 function update_address_query($address, $post_ref) {
@@ -99,8 +92,8 @@ function update_address_query($address, $post_ref) {
         array(
             "housenumber" => $address[0],
             "street" => $address[1],
-            "postalcode" => $address[2],
-            "city" => $address[3]
+            "postalcode" => $address[3],
+            "city" => $address[2]
         ),
         array(
             "post_reference" => $post_ref
