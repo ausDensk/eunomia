@@ -30,7 +30,13 @@ function create_address_array() {
     $street = $_POST["streetvalue"];
     $city = $_POST["cityvalue"];
     $postalcode = $_POST["postalcodevalue"];
-    return array($housenumber, $street, $city, $postalcode);
+    return sanitize_all_inputs(array($housenumber, $street, $city, $postalcode));
+};
+
+function sanitize_all_inputs($address_array) {
+    return array_map(function ($component) {
+        return esc_html($component);
+    }, $address_array);
 };
 
 function address_not_set($address) {
@@ -138,7 +144,7 @@ function create_marker_data($coord_array) {
     $result = array();
     for ($i = 0; $i < count($coord_array); $i++) {
             $title_for_window = assign_description_or_title($coord_array[$i]);
-            array_push($result, 
+            array_push($result,
                        array(
                            $coord_array[$i]->lat, 
                            $coord_array[$i]->lng, 
@@ -165,7 +171,7 @@ function new_echo_on_edit_page() {
 
 function post_coordinates($ID) {
     $new_address = create_address_array();
-    $new_description = $_POST["descriptionvalue"];
+    $new_description = esc_html($_POST["descriptionvalue"]);
     if (isset($_POST["postscreen_input"])) {
 	    decide_on_action($ID, $new_address, $new_description);
     };

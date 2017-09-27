@@ -25,22 +25,22 @@ function display_formular($post) {
 
 <p>Straße:</p>
 <p>
-    <input type="text" id="streetid" name="streetvalue" class="form-input-tip" size="16" value="<?php echo $post_address['street']; ?>">
+    <input type="text" id="streetid" name="streetvalue" class="form-input-tip" size="16" maxlength="127" value="<?php echo $post_address['street']; ?>">
 </p>
 
 <p>Hausnummer:</p>
 <p>
-    <input type="text" id="housenumberid" name="housenumbervalue" class="form-input-tip" size="16" value="<?php echo $post_address['housenumber']; ?>">
+    <input type="text" id="housenumberid" name="housenumbervalue" class="form-input-tip" size="16" maxlength="5" value="<?php echo $post_address['housenumber']; ?>">
 </p>
 
 <p>PLZ:</p>
 <p>
-    <input type="text" id="postalcodeid" name="postalcodevalue" class="form-input-tip" size="16" value="<?php echo $post_address['postalcode']; ?>">
+    <input type="text" id="postalcodeid" name="postalcodevalue" class="form-input-tip" size="16" maxlength="5" value="<?php echo $post_address['postalcode']; ?>">
 </p>
 
 <p>Stadt:</p>
 <p>
-    <input type="text" id="cityid" name="cityvalue" class="form-input-tip" size="16" value="<?php echo $post_address['city']; ?>">
+    <input type="text" id="cityid" name="cityvalue" class="form-input-tip" size="16" maxlength="63" value="<?php echo $post_address['city']; ?>">
 </p>
 
 <p>Kurze Beschreibung des Markers:</p>
