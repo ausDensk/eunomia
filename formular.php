@@ -6,6 +6,7 @@ function display_formular($post) {
 ?>
 
 <button class="button" onclick="deleteAllEntries()">Löschen</button>
+<div style="border-radius: 100%; background-color: black; float: right; width: 20px; height: 20px; display: flex; cursor: pointer" onclick="window.open('https://github.com/ausDensk/eunomia','_blank')"><span style="color: white; margin: auto">?</span></div>
 
 <script type="text/javascript">
     function deleteAllEntries() {
