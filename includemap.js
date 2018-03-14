@@ -117,8 +117,10 @@ function getMap() {
     var mapXHR = new XMLHttpRequest();
     mapXHR.open("GET", "./wp-content/plugins/starrplugin/map.html");
     mapXHR.onload = function() {
-        document.querySelector("#main").innerHTML += mapXHR.responseText;
-        displayMapWithEverything();
+        document.addEventListener("DOMContentLoaded", e => {
+            document.querySelector("#main").innerHTML += mapXHR.responseText;
+            displayMapWithEverything();
+        });
     };
     mapXHR.send()
-} 
+}
